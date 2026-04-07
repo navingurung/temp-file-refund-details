@@ -1,11 +1,11 @@
-# temp-file-refund-details
 ```javascript
 "use client";
 
 import { useState } from "react";
-import axios from "axios";
 import Link from "next/link";
+import axios from "axios";
 import { toast } from "sonner";
+import { X } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,15 +15,14 @@ import { STATUS, type Status } from "@/lib/constants/status";
 import { AccordionDemo } from "@/app/dashboard/refund/[id]/accordion";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogClose,
 } from "@/components/ui/dialog";
-import React from "react";
 
 type Refund = {
   id: string;
@@ -46,6 +45,46 @@ type Refund = {
   delete_request_body?: string;
   delete_response_body?: string;
   deleted_at?: string;
+};
+
+type DeleteRefundResponse = {
+  success: boolean;
+  deleted_at: string;
+  delete_request_body?: string;
+  delete_response_body?: string;
+};
+
+// fake API function
+const deleteRefund = async (id: string): Promise<DeleteRefundResponse> => {
+  try {
+    // fake endpoint for now
+    // later, just change this endpoint to the real one
+    await axios.post("/api/refund/delete", { id });
+
+    return {
+      success: true,
+      deleted_at: new Date().toISOString(),
+      delete_request_body: JSON.stringify(
+        {
+          id,
+          action: "delete",
+        },
+        null,
+        2,
+      ),
+      delete_response_body: JSON.stringify(
+        {
+          success: true,
+          message: "Fake delete completed",
+        },
+        null,
+        2,
+      ),
+    };
+  } catch (error) {
+    console.error("deleteRefund error:", error);
+    throw error;
+  }
 };
 
 // 2026-02-20T06:56:19.663114(UTC)を2026/02/20 15:56:19(JST)の形式に変換する関数
@@ -92,29 +131,14 @@ export default function RefundDetailClient({ refund }: { refund: Refund }) {
     try {
       setIsDeleting(true);
 
-      // test API call only
-      await axios.delete("https://fakestoreapi.com/products/1");
+      const result = await deleteRefund(refundState.id);
 
       setRefundState((prev) => ({
         ...prev,
         status: "cancelled",
-        deleted_at: new Date().toISOString(),
-        delete_request_body: JSON.stringify(
-          {
-            id: prev.id,
-            action: "delete",
-          },
-          null,
-          2,
-        ),
-        delete_response_body: JSON.stringify(
-          {
-            success: true,
-            message: "Test delete completed",
-          },
-          null,
-          2,
-        ),
+        deleted_at: result.deleted_at,
+        delete_request_body: result.delete_request_body,
+        delete_response_body: result.delete_response_body,
       }));
 
       toast.success("申請を取り消しました");

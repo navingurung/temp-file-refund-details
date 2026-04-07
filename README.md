@@ -1,5 +1,5 @@
 # temp-file-refund-details
-
+```javascript
 "use client";
 
 import { useState } from "react";
@@ -274,3 +274,5 @@ function ID({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
+
+```

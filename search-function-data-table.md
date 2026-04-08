@@ -1,4 +1,4 @@
-```javscript
+```javascript
 "use client";
 
 import * as React from "react";

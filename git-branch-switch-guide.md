@@ -35,6 +35,7 @@ So:
 ## 🔄 Flow Diagram (Simple)
 
 ```mermaid
+
 fflowchart TD
 
 A[Start] --> B{Any uncommitted changes?}

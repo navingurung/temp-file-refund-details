@@ -1,9 +1,9 @@
 ```mermaid
 flowchart LR
-    A[System Status<br/>(English)] --> B[Translate to Japanese Label]
+    A[System Status (English)] --> B[Translate to Japanese Label]
     B --> C[Display in Table]
 
-    D[User selects a Japanese status<br/>from dropdown] --> E[System checks which English statuses match]
+    D[User selects a Japanese status from dropdown] --> E[System checks matching statuses]
     A --> E
 
     E --> F{Match?}

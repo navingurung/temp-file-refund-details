@@ -205,4 +205,112 @@ function InfoItem({
     </div>
   );
 }
+
+
+
+
+const statusSteps = [
+  "税関審査待ち",
+  "処理待ち",
+  "処理中",
+  "送金済",
+];
+
+
+
+function StatusStepper({ currentStatus }: { currentStatus: string }) {
+  const currentIndex = statusSteps.indexOf(currentStatus);
+
+  // Handle terminal states
+  if (currentStatus === "キャンセル" || currentStatus === "免税不可") {
+    return (
+      <div className="flex items-center justify-center py-4">
+        <Badge
+          variant="cancelled"
+          className="flex items-center gap-2 px-4 py-2 text-sm"
+        >
+          <IconX className="h-4 w-4 text-red-500" />
+          {currentStatus}
+        </Badge>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center justify-between">
+      {statusSteps.map((step, index) => {
+        const isCompleted = index < currentIndex;
+        const isCurrent = index === currentIndex;
+
+        return (
+          <div key={step} className="flex flex-1 items-center">
+            {/* Step Circle */}
+            <div className="flex flex-col items-center">
+              <div
+                className={`flex h-10 w-10 items-center justify-center rounded-full border-2 ${
+                  isCompleted
+                    ? "border-green-500 bg-green-500 text-white"
+                    : isCurrent
+                    ? "border-yellow-500 bg-yellow-100 text-yellow-700"
+                    : "border-gray-300 bg-gray-100 text-gray-400"
+                }`}
+              >
+                {isCompleted ? (
+                  <IconCircleCheckFilled className="h-5 w-5" />
+                ) : isCurrent ? (
+                  <IconLoader className="h-5 w-5 animate-spin" />
+                ) : (
+                  <span className="text-sm font-medium">{index + 1}</span>
+                )}
+              </div>
+              <span className="mt-2 text-xs text-center">{step}</span>
+            </div>
+
+            {/* Connector Line */}
+            {index < statusSteps.length - 1 && (
+              <div
+                className={`flex-1 h-0.5 mx-2 ${
+                  isCompleted ? "bg-green-500" : "bg-gray-300"
+                }`}
+              />
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+
+Replace the Existing Status Section
+
+{/* Status */}
+<Card>
+  <CardHeader>
+    <CardTitle>ステータス</CardTitle>
+  </CardHeader>
+  <CardContent className="space-y-6">
+    {/* Current Status Badge */}
+    <div>
+      <p className="mb-2 text-sm text-muted-foreground">
+        現在のステータス
+      </p>
+      <Badge
+        variant={currentVariant}
+        className="inline-flex items-center gap-1.5 px-3 py-1.5"
+      >
+        {renderStatusIcon(currentVariant)}
+        <span>{currentStatus}</span>
+      </Badge>
+    </div>
+
+    {/* Live Tracker Stepper */}
+    <div>
+      <p className="mb-4 text-sm text-muted-foreground">
+        進捗状況
+      </p>
+      <StatusStepper currentStatus={currentStatus} />
+    </div>
+  </CardContent>
+</Card>
 ```

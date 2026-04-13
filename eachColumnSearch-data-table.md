@@ -66,4 +66,4 @@ export function SortableHeader({
 
 )
 ```
-<img width="1596" height="665" alt="Screenshot 2026-04-13 at 10 06 13" src="https://github.com/user-attachments/assets/b4c03f7f-1a66-40ce-a410-51bb18f3fecf" />
+<img width="1593" height="662" alt="Screenshot 2026-04-13 at 10 17 05" src="https://github.com/user-attachments/assets/b209ca73-ea86-4196-be22-b2006e5c5d62" />

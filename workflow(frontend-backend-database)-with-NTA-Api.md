@@ -91,3 +91,49 @@ flowchart LR
    - delete_send_no
    - deleted_at
 6. データベースの保存完了後、バックエンドがフロントエンドへ成功レスポンスを返却。
+
+
+
+
+```mermaid
+flowchart LR
+    FE["1. Frontend"] --> BE1["2. Backend"]
+    BE1 --> DB1["3. DB Read"]
+    DB1 --> BE2["4. Backend"]
+    BE2 --> NTA["5. NTA API Response"]
+    NTA --> BE3["6. Backend Processing (resp.json())"]
+    BE3 -->|❌ Error| ERR["500 Internal Server Error"]
+    BE3 -->|✅ Success| DB2["7. DB Save"]
+    DB2 --> BE4["8. Backend Response"]
+    BE4 --> FE2["9. Frontend Update"]
+
+    classDef error fill:#ffe5e5,stroke:#d32f2f,stroke-width:2px;
+    class ERR error;
+
+```
+
+```python
+ try:
+    refund.status = "cancelled"
+    session.add(refund)
+    
+    refund_record.delete_request_body = encrypt(request_body)
+    refund_record.delete_response_body = encrypt(resp.json())
+    refund_record.delete_send_no = newSendNo
+    refund_record.deleted_at = datetime.now()
+    session.add(refund_record)
+    session.commit()
+    session.refresh(refund_record)
+    session.refresh(refund)
+    
+  except Exception as e:
+    session.rollback()
+    raise HTTPException(status_code=500, detail=f"Error saving delete refund to DB: {str(e)}")
+
+```
+
+<img width="1894" height="795" alt="Screenshot 2026-04-15 at 8 36 11" src="https://github.com/user-attachments/assets/6d3e8b02-2a8c-4b12-b29f-f3731e618a32" />
+
+
+
+

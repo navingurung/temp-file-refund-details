@@ -155,3 +155,37 @@ flowchart LR
 
 
 
+
+### 解決策：
+
+```python
+    # NTA APIのレスポンスを安全に処理する
+    # レスポンスがJSON形式であればそのまま保存し、
+    # 空または非JSONの場合は、ステータスコードや生のテキストを保存する。
+    response_body = {}
+
+    if resp.text and resp.text.strip():
+        try:
+            # JSON形式の場合
+            response_body = resp.json()
+        except Exception:
+            # JSONでない場合
+            response_body = {
+                "status_code": resp.status_code,
+                "content_type": resp.headers.get("Content-Type"),
+                "raw_text": resp.text,
+            }
+    else:
+        # レスポンスが空の場合
+        response_body = {
+            "status_code": resp.status_code,
+            "content_type": resp.headers.get("Content-Type"),
+            "message": "empty response",
+        }
+
+    # 安全に処理したレスポンスを暗号化して保存
+    refund_record.delete_response_body = encrypt(response_body)
+
+```
+
+
